@@ -8,7 +8,6 @@ mod loader;
 use config::window_conf;
 
 pub type R = Result<(), Box<dyn Error>>;
-const GRAVITY: f32 = 9.3;
 
 enum BirdAnimation {
     Up,
@@ -43,12 +42,16 @@ fn gen_rand_pipe(pipe: &loader::FImage) -> (Rect, Rect, Rect, bool) {
 
 #[macroquad::main(window_conf())]
 async fn main() -> R {
-    let mut bird = loader::load_bird()?;
+    let bird = loader::load_bird()?;
     let mut bird_animation_timer = 0.0;
     let bird_animation_interval = 0.1;
     let pipe_spawn_interval = 1.7;
     let mut pipe_spawn_timer = 0.0;
-    let jump_force = -3.2;
+
+    let gravity = 1000.0;
+    let obs_velocity = 140.0; // constant untuk kecepatan obstacle 
+    let jump_force = -350.0;
+
     let mut bird_animation = BirdAnimation::Down;
     let bg = loader::load_image(include_bytes!("../assets/sprites/background-day.png"))?;
     let ground = loader::load_image(include_bytes!("../assets/sprites/base.png"))?;
@@ -118,7 +121,7 @@ async fn main() -> R {
                 play_sound_once(&wing_sfx);
 
                 bird_y_velocity = jump_force;
-                bird.params.rotation = -0.35;
+                // bird.params.rotation = -0.35;
             }
             draw_texture_ex(
                 &ground.tex,
@@ -140,7 +143,7 @@ async fn main() -> R {
                     // karena kita harus membuat physics secara manual.
                     play_sound_once(&wing_sfx);
                     bird_y_velocity = jump_force;
-                    bird.params.rotation = -0.35;
+                    // bird.params.rotation = -0.35;
                 }
 
                 // cek kena tanah atau kaga
@@ -152,14 +155,14 @@ async fn main() -> R {
                     is_dead = true;
                 }
             }
-            if bird.params.rotation <= 1.0 {
-                bird.params.rotation += 0.01;
-            }
+            // if bird.params.rotation <= 1.0 {
+            //     bird.params.rotation += 0.01 * dt;
+            // }
             // jatuh
-            bird_y_velocity += GRAVITY * dt;
+            bird_y_velocity += gravity * dt;
 
             // apply velocity
-            bird_y += bird_y_velocity;
+            bird_y += bird_y_velocity * dt;
 
             // cek ground ke 2 sudah ke titik pojok kiri layar atau belum
             // kalau ditanya kenapa? karena begini:
@@ -174,8 +177,8 @@ async fn main() -> R {
             // diam tak bergerak.
             if !is_dead {
                 if ground_x[1] >= 0.0 {
-                    ground_x[0] -= 1.0;
-                    ground_x[1] -= 1.0;
+                    ground_x[0] -= obs_velocity * dt; // pergerakan ground
+                    ground_x[1] -= obs_velocity * dt; // 
                 } else {
                     // reset posisi kedua ground
                     ground_x = [0.0, ground.tex.width() * 1.5];
@@ -224,9 +227,9 @@ async fn main() -> R {
             }
             for i in &mut pipes {
                 if !is_dead {
-                    i.0.x -= 1.0;
-                    i.1.x -= 1.0;
-                    i.2.x -= 1.0;
+                    i.0.x -= obs_velocity * dt;
+                    i.1.x -= obs_velocity * dt;
+                    i.2.x -= obs_velocity * dt;
                 }
                 draw_texture_ex(&pipe.tex, i.0.x, i.0.y, WHITE, pipe.params.clone());
                 draw_texture_ex(&pipe.tex, i.1.x, i.1.y, WHITE, pipe_flipped.params.clone());
