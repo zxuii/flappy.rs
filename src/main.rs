@@ -61,8 +61,9 @@ async fn main() -> R {
     let game_over_msg = loader::load_image(include_bytes!("../assets/sprites/gameover.png"))?;
     let mut score = 0;
     let center_pos: Vec2 = vec2(center(screen_width()), center(screen_height()));
-    let text_font =
+    let mut text_font =
         load_ttf_font_from_bytes(include_bytes!("../assets/fonts/FlappyBirdRegular.ttf"))?;
+    text_font.set_filter(FilterMode::Nearest);
     let pipe = loader::load_image(include_bytes!("../assets/sprites/pipe-green.png"))?;
     let mut pipe_flipped = loader::load_image(include_bytes!("../assets/sprites/pipe-green.png"))?;
     let mut is_dead_sfx_played = false;
