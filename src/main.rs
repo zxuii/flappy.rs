@@ -2,6 +2,8 @@ use macroquad::{audio::*, prelude::*};
 // use macroquad::rand::gen_range;
 use ::rand::RngExt;
 use std::error::Error;
+use std::collections::VecDeque;
+
 
 mod config;
 mod loader;
@@ -68,9 +70,9 @@ async fn main() -> R {
 
     pipe_flipped.params.flip_y = true;
 
-    let mut pipes: Vec<(Rect, Rect, Rect, bool)> = vec![];
+    let mut pipes: VecDeque<(Rect, Rect, Rect, bool)> = VecDeque::new();
     let random_pipe = gen_rand_pipe(&pipe);
-    pipes.push(random_pipe);
+    pipes.push_back(random_pipe);
 
     let (bird_x, mut bird_y) = (
         center_pos.x - ((bird.tex_up.width() / 2.0) * 1.5),
@@ -218,11 +220,11 @@ async fn main() -> R {
                 if pipe_spawn_timer >= pipe_spawn_interval {
                     pipe_spawn_timer -= pipe_spawn_interval;
                     let random_pipe = gen_rand_pipe(&pipe);
-                    pipes.push(random_pipe);
+                    pipes.push_back(random_pipe);
                 }
 
                 if pipes.len() >= 5 {
-                    pipes.remove(0);
+                    pipes.pop_front();
                 }
             }
             for i in &mut pipes {
