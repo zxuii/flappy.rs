@@ -380,6 +380,8 @@ async fn main() -> R {
         next_frame().await
     }
 }
+
+// jujur, ini ga guna samsek buset
 fn center(x: f32) -> f32 {
     x / 2.0
 }
