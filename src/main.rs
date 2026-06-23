@@ -164,8 +164,16 @@ async fn main() -> R {
             // jatuh
             bird_y_velocity += gravity * dt;
 
-            // apply velocity
-            bird_y += bird_y_velocity * dt;
+            // biar burung ga jatuh selamanya sampe kena float limit,
+            // walau ga mungkin tapi ya jaga-jaga aja
+            if !(bird_y >= screen_height() + 500.0) { // gatau juga kenapa 500, feeling gw udah pas sih
+                // apply velocity
+                bird_y += bird_y_velocity * dt;
+            }
+
+            // debug: print ketinggian di window biar ga overhead stdio
+            // draw_text(bird_y.to_string(), center_pos.x, center_pos.y, 60.0, BLACK);
+
 
             // cek ground ke 2 sudah ke titik pojok kiri layar atau belum
             // kalau ditanya kenapa? karena begini:
