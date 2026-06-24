@@ -44,7 +44,7 @@ fn gen_rand_pipe(pipe: &loader::FImage) -> (Rect, Rect, Rect, bool) {
 
 #[macroquad::main(window_conf())]
 async fn main() -> R {
-    let bird = loader::load_bird()?;
+    let mut bird = loader::load_bird()?;
     let mut bird_animation_timer = 0.0;
     let bird_animation_interval = 0.1;
     let pipe_spawn_interval = 1.7;
@@ -124,7 +124,7 @@ async fn main() -> R {
                 play_sound_once(&wing_sfx);
 
                 bird_y_velocity = jump_force;
-                // bird.params.rotation = -0.35;
+                bird.params.rotation = -0.35;
             }
             draw_texture_ex(
                 &ground.tex,
@@ -146,7 +146,7 @@ async fn main() -> R {
                     // karena kita harus membuat physics secara manual.
                     play_sound_once(&wing_sfx);
                     bird_y_velocity = jump_force;
-                    // bird.params.rotation = -0.35;
+                    bird.params.rotation = -0.35;
                 }
 
                 // cek kena tanah atau kaga
@@ -158,9 +158,11 @@ async fn main() -> R {
                     is_dead = true;
                 }
             }
-            // if bird.params.rotation <= 1.0 {
-            //     bird.params.rotation += 0.01 * dt;
-            // }
+
+            if bird.params.rotation <= 1.0 {
+                bird.params.rotation += 1.0 * dt;
+            }
+
             // jatuh
             bird_y_velocity += gravity * dt;
 

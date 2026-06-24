@@ -29,7 +29,7 @@ Jangan lupa untuk menginstall rust compiler di [rust-lang.org](https://rust-lang
 Masih ada beberapa hal yang belum dibuat disini, antara lain:
 
 - [ ] Sistem highscore
-- [ ] Sistem rotasi burung saat loncat dan jatuh
+- [x] (SELESAI) Sistem rotasi burung saat loncat dan jatuh
 - [ ] Sistem medali
 - [ ] Untuk scoring bukan pake font, tapi pake sprite angka yang tersedia di folder `assets/`
 - [ ] Ubah total arsitektur dari yang bloat banyak hal disimpan di variable local menggunakan state struct seperti `GameState` agar lebih proper dan clean codenya.
